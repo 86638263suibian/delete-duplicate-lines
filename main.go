@@ -6,11 +6,15 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
 	inputPtr := flag.String("input", "", "Input file path")
 	outputPtr := flag.String("output", "", "Output file path")
+	seperatorPtr := flag.String("seperator", "", "Seperator for each lines")
+	compareIndexPtr := flag.Int("index", 0, "Index of seperated slice to compare")
+	skipLinesPtr := flag.Bool("skip", false, "Skip lines that cannot be seperated")
 	flag.Parse()
 	if *inputPtr == "" {
 		fmt.Println("Please provide input file path")
@@ -26,11 +30,26 @@ func main() {
 	var outputBuff bytes.Buffer
 	w := bufio.NewWriter(&outputBuff)
 	var rows []string
+	var seperatedRow []string
 ScannerLoop:
 	for scanner.Scan() {
 		row := scanner.Text()
+		if *seperatorPtr != "" {
+			seperatedRow = strings.Split(row, *seperatorPtr)
+			if len(seperatedRow) <= *compareIndexPtr {
+				if *skipLinesPtr == false {
+					rows = append(rows, row)
+				}
+				continue ScannerLoop
+			}
+		}
 		for _, r := range rows {
-			if r == row {
+			if *seperatorPtr != "" {
+				seperatedR := strings.Split(r, *seperatorPtr)
+				if seperatedRow[*compareIndexPtr] == seperatedR[*compareIndexPtr] {
+					continue ScannerLoop
+				}
+			} else if r == row {
 				continue ScannerLoop
 			}
 		}
