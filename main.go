@@ -22,7 +22,7 @@ func main() {
 	}
 	inputFile, err := os.Open(*inputPtr)
 	if err != nil {
-		fmt.Errorf("There was a problem with input file: %s", err)
+		fmt.Printf("There was a problem with input file: %s", err)
 		return
 	}
 	defer inputFile.Close()
@@ -55,7 +55,7 @@ ScannerLoop:
 		}
 		rows = append(rows, row)
 		if _, err := w.WriteString(row + "\n"); err != nil {
-			fmt.Errorf("error writing: %s", err)
+			fmt.Printf("error writing: %s", err)
 			return
 		}
 	}
@@ -66,14 +66,14 @@ ScannerLoop:
 	}
 	outputFile, err := os.Create(*outputPtr)
 	if err != nil {
-		fmt.Errorf("There was a problem with output file: %s", err)
+		fmt.Printf("There was a problem with output file: %s", err)
 		return
 	}
 	defer outputFile.Close()
 	_, err = outputFile.Write(outputBuff.Bytes())
 	if err != nil {
-		fmt.Errorf("There was a problem writing in output file: %s", err)
+		fmt.Printf("There was a problem writing in output file: %s", err)
 		return
 	}
-	fmt.Println("output file create: %s", *outputPtr)
+	fmt.Println("output file create: ", *outputPtr)
 }
